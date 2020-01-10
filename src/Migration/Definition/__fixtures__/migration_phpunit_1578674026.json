@@ -1,0 +1,15 @@
+{
+  "version": 1578674026,
+  "indexType": "phpunit",
+  "mappingType": "default",
+  "propertiesToUpdate": {
+    "author": {
+      "type": "text",
+      "fields": {
+        "name": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

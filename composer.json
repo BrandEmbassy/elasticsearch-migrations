@@ -1,33 +1,35 @@
 {
-    "name": "brandembassy/elasticsearch-migrations",
-    "license": "MIT",
-    "type": "library",
-    "description": "",
-    "autoload": {
-        "psr-4": {
-            "BrandEmbassy\\ElasticSearchMigrations\\": "src"
-        }
-    },
-    "require": {
-        "brandembassy/elastica": "dev-6.0.2-trigger-error-fix",
-        "symfony/console": "^4.3",
-        "doctrine/collections": "^1.6",
-        "nette/utils": "~3.0.2",
-        "nette/finder": "^2.5"
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/BrandEmbassy/Elastica.git"
-        }
-    ],
-    "require-dev": {
-        "brandembassy/coding-standard": "^8.0",
-        "phpunit/phpunit": "^8.5"
-    },
-    "scripts": {
-        "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
-        "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
-        "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src"
+  "name": "brandembassy/elasticsearch-migrations",
+  "license": "MIT",
+  "type": "library",
+  "description": "",
+  "autoload": {
+    "psr-4": {
+      "BrandEmbassy\\ElasticSearchMigrations\\": "src"
     }
+  },
+  "require": {
+    "brandembassy/elastica": "dev-6.0.2-trigger-error-fix",
+    "symfony/console": "^4.3",
+    "doctrine/collections": "^1.6",
+    "nette/utils": "~3.0.2",
+    "nette/finder": "^2.5",
+    "mockery/mockery": "^1.3"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/BrandEmbassy/Elastica.git"
+    }
+  ],
+  "require-dev": {
+    "brandembassy/coding-standard": "^8.0",
+    "phpunit/phpunit": "^8.5"
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
+    "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
+    "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src",
+    "phpunit": "./vendor/bin/phpunit src --no-coverage"
+  }
 }

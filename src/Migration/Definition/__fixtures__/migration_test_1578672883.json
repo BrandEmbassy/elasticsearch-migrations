@@ -1,0 +1,15 @@
+{
+  "version": 1578672883,
+  "indexType": "test",
+  "mappingType": "default",
+  "propertiesToUpdate": {
+    "id": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

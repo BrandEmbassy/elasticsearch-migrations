@@ -61,10 +61,10 @@ final class IndexMappingPartialUpdater
 
     private function updateMappingForIndex(MigrationInterface $migration): void
     {
-        $esIndex = $this->elasticSearchClient->getIndex($this->indexName);
-        $esType = $esIndex->getType($migration->getMappingType());
+        $elasticSearchIndex = $this->elasticSearchClient->getIndex($this->indexName);
+        $elasticSearchType = $elasticSearchIndex->getType($migration->getMappingType());
 
-        $mapping = new Mapping($esType, $migration->getPropertiesToUpdate());
+        $mapping = new Mapping($elasticSearchType, $migration->getPropertiesToUpdate());
 
         $mapping->send();
 
