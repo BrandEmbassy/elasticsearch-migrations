@@ -4,37 +4,26 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
 use BrandEmbassy\ElasticSearchMigrations\Index\IndexNameResolverInterface;
 use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\IndexMappingPartialUpdater;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoaderInterface;
 use Doctrine\Common\Collections\Collection;
 use Elastica\Client;
 
-final class MigrationHandler
+final class MigrationExecutor
 {
-    /**
-     * @var MigrationConfig
-     */
-    private $migrationConfig;
-
-    /**
-     * @var IndexMappingPartialUpdater
-     */
-    private $indexMappingPartialUpdater;
-
     /**
      * @var MigrationsLoaderInterface
      */
     private $migrationsLoader;
 
 
-    public function __construct(
-        MigrationsLoaderInterface $migrationsLoader,
-        IndexMappingPartialUpdater $indexMappingPartialUpdater
-    ) {
-        $this->indexMappingPartialUpdater = $indexMappingPartialUpdater;
+    public function __construct(MigrationsLoaderInterface $migrationsLoader)
+    {
         $this->migrationsLoader = $migrationsLoader;
     }
 
 
-    public function migrate(Client $esClient, ?int $lastVersion, IndexNameResolverInterface $indexNameResolver): int
+    public function migrate(Client $esClient, ?int $lastVersion, IndexNameResolverInterface $indexNameResolver): ?int
     {
         $migrations = $this->getMigrations($lastVersion);
 
@@ -43,7 +32,9 @@ final class MigrationHandler
         foreach ($migrations as $migration) {
             $indexName = $indexNameResolver->getIndexName($migration);
 
-            $this->indexMappingPartialUpdater->update($esClient, $migration, $indexName, $lastMigratedVersion);
+            $indexMappingPartialUpdater = new IndexMappingPartialUpdater($esClient, $indexName);
+
+            $indexMappingPartialUpdater->update($migration, $lastMigratedVersion);
 
             $lastMigratedVersion = $migration->getVersion();
         }
@@ -53,7 +44,7 @@ final class MigrationHandler
 
 
     /**
-     * @return Collection|MigrationDefinitionInterface[]
+     * @return Collection<int, MigrationInterface>|MigrationInterface[]
      */
     private function getMigrations(?int $lastVersion): Collection
     {
@@ -64,7 +55,7 @@ final class MigrationHandler
         }
 
         return $allMigrations->filter(
-            static function (MigrationDefinitionInterface $migrationDefinition) use ($lastVersion): bool {
+            static function (MigrationInterface $migrationDefinition) use ($lastVersion): bool {
                 return $migrationDefinition->getVersion() > $lastVersion;
             }
         );

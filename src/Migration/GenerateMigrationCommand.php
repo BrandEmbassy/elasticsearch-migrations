@@ -2,17 +2,20 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationParserInterface;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use function sprintf;
+use function time;
 
 final class GenerateMigrationCommand extends Command
 {
     /**
-     * @var MigrationConfig
+     * @var Configuration
      */
     private $migrationConfig;
 
@@ -22,7 +25,7 @@ final class GenerateMigrationCommand extends Command
     private $migrationParser;
 
 
-    public function __construct(MigrationConfig $migrationConfig, MigrationParserInterface $migrationParser)
+    public function __construct(Configuration $migrationConfig, MigrationParserInterface $migrationParser)
     {
         parent::__construct();
         $this->migrationConfig = $migrationConfig;
@@ -40,17 +43,19 @@ final class GenerateMigrationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $indexType */
         $indexType = $input->getArgument('indexType');
-        $mappingType = $input->getArgument('mappingType');
-        $version = time();
 
-        $migrationDefinition = new MigrationDefinition($indexType, $mappingType, [], $version);
+        /** @var string $mappingType */
+        $mappingType = $input->getArgument('mappingType');
+
+        $migrationDefinition = new Migration($indexType, $mappingType, [], time());
 
         $fileName = sprintf(
             '%s/migration_%s_%s.json',
             $this->migrationConfig->getMigrationsDirectory(),
             $migrationDefinition->getIndexType(),
-            $version
+            $migrationDefinition->getVersion()
         );
         FileSystem::write($fileName, $this->migrationParser->objectToJson($migrationDefinition));
 

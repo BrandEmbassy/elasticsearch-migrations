@@ -2,7 +2,7 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Index\Mapping;
 
-use BrandEmbassy\ElasticSearchMigrations\Migration\MigrationDefinitionInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
 use Elastica\Exception\ElasticsearchException;
 use Exception;
 use Throwable;
@@ -11,49 +11,43 @@ use function sprintf;
 final class MappingUpdateFailedException extends Exception
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $lastVersion;
 
     /**
-     * @var MigrationDefinitionInterface
+     * @var MigrationInterface
      */
-    private $migrationDefinition;
+    private $migration;
 
 
     public function __construct(
         string $message,
-        MigrationDefinitionInterface $migrationDefinition,
+        MigrationInterface $migration,
         ?int $lastVersion,
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         parent::__construct($message, 0, $previous);
-        $this->migrationDefinition = $migrationDefinition;
+        $this->migration = $migration;
         $this->lastVersion = $lastVersion;
     }
 
 
-    /**
-     * @return int|null
-     */
     public function getLastVersion(): ?int
     {
         return $this->lastVersion;
     }
 
 
-    /**
-     * @return MigrationDefinitionInterface
-     */
-    public function getMigrationDefinition(): MigrationDefinitionInterface
+    public function getMigration(): MigrationInterface
     {
-        return $this->migrationDefinition;
+        return $this->migration;
     }
 
 
     public static function createFromElasticSearchException(
         ElasticsearchException $exception,
-        MigrationDefinitionInterface $migrationDefinition,
+        MigrationInterface $migrationDefinition,
         ?int $lastVersion
     ): self {
         return self::create(
@@ -66,7 +60,7 @@ final class MappingUpdateFailedException extends Exception
 
     public static function create(
         string $message,
-        MigrationDefinitionInterface $migrationDefinition,
+        MigrationInterface $migrationDefinition,
         ?int $lastVersion
     ): self {
         return new self($message, $migrationDefinition, $lastVersion);

@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\ElasticSearchMigrations\Migration;
+namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
+use BrandEmbassy\ElasticSearchMigrations\Migration\Configuration;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Nette\Utils\FileSystem;
@@ -12,9 +13,9 @@ use function uasort;
 final class MigrationsLoader implements MigrationsLoaderInterface
 {
     /**
-     * @var MigrationConfig
+     * @var Configuration
      */
-    private $migrationConfig;
+    private $configuration;
 
     /**
      * @var MigrationParserInterface
@@ -22,18 +23,21 @@ final class MigrationsLoader implements MigrationsLoaderInterface
     private $migrationParser;
 
     /**
-     * @var Collection|MigrationDefinitionInterface[]|null
+     * @var Collection<int, MigrationInterface>|MigrationInterface[]|null
      */
     private $loadedMigrations;
 
 
-    public function __construct(MigrationConfig $migrationConfig, MigrationParserInterface $migrationParser)
+    public function __construct(Configuration $migrationConfig, MigrationParserInterface $migrationParser)
     {
-        $this->migrationConfig = $migrationConfig;
+        $this->configuration = $migrationConfig;
         $this->migrationParser = $migrationParser;
     }
 
 
+    /**
+     * @return Collection<int, MigrationInterface>|MigrationInterface[]
+     */
     public function loadMigrations(): Collection
     {
         if ($this->loadedMigrations !== null) {
@@ -41,7 +45,7 @@ final class MigrationsLoader implements MigrationsLoaderInterface
         }
 
         /** @var SplFileInfo[] $migrationsSearch */
-        $migrationsSearch = Finder::findFiles('*.json')->in($this->migrationConfig->getMigrationsDirectory());
+        $migrationsSearch = Finder::findFiles('*.json')->in($this->configuration->getMigrationsDirectory());
 
         $migrations = [];
 
@@ -51,8 +55,8 @@ final class MigrationsLoader implements MigrationsLoaderInterface
 
         uasort(
             $migrations,
-            static function (MigrationDefinitionInterface $migrationA, MigrationDefinitionInterface $migrationB): bool {
-                return $migrationA->getVersion() > $migrationB->getVersion();
+            static function (MigrationInterface $migrationA, MigrationInterface $migrationB): int {
+                return $migrationA->getVersion() > $migrationB->getVersion() ? 1 : -1;
             }
         );
 

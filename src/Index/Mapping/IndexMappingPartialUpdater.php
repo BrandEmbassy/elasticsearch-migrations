@@ -3,7 +3,7 @@
 namespace BrandEmbassy\ElasticSearchMigrations\Index\Mapping;
 
 use BrandEmbassy\ElasticSearchMigrations\Client\MissingConnectionException;
-use BrandEmbassy\ElasticSearchMigrations\Migration\MigrationDefinitionInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
 use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
@@ -11,18 +11,38 @@ use Throwable;
 
 final class IndexMappingPartialUpdater
 {
+    /**
+     * @var Client
+     */
+    private $elasticSearchClient;
+
+    /**
+     * @var string
+     */
+    private $indexName;
+
+
+    public function __construct(Client $elasticSearchClient, string $indexName)
+    {
+        $this->elasticSearchClient = $elasticSearchClient;
+        $this->indexName = $indexName;
+    }
+
+
+    /**
+     * @throws MappingUpdateFailedException
+     * @throws MissingConnectionException
+     */
     public function update(
-        Client $esClient,
-        MigrationDefinitionInterface $migrationDefinition,
-        string $indexName,
+        MigrationInterface $migrationDefinition,
         ?int $lastMigratedVersion
     ): void {
-        if (!$esClient->hasConnection()) {
+        if (!$this->elasticSearchClient->hasConnection()) {
             throw MissingConnectionException::create();
         }
 
         try {
-            $this->updateMappingForIndex($esClient, $migrationDefinition, $indexName);
+            $this->updateMappingForIndex($migrationDefinition);
         } catch (ResponseException $exception) {
             throw MappingUpdateFailedException::createFromElasticSearchException(
                 $exception->getElasticsearchException(),
@@ -39,19 +59,15 @@ final class IndexMappingPartialUpdater
     }
 
 
-    private function updateMappingForIndex(
-        Client $esClient,
-        MigrationDefinitionInterface $migrationDefinition,
-        string $indexName
-    ): void {
-        $esIndex = $esClient->getIndex($indexName);
-        $esType = $esIndex->getType($migrationDefinition->getMappingType());
+    private function updateMappingForIndex(MigrationInterface $migration): void
+    {
+        $esIndex = $this->elasticSearchClient->getIndex($this->indexName);
+        $esType = $esIndex->getType($migration->getMappingType());
 
-        $mapping = new Mapping();
-        $mapping->setType($esType);
-        $mapping->setProperties($migrationDefinition->getPropertiesToUpdate());
+        $mapping = new Mapping($esType, $migration->getPropertiesToUpdate());
 
         $mapping->send();
-        $esClient->getIndex($indexName)->refresh();
+
+        $this->elasticSearchClient->getIndex($this->indexName)->refresh();
     }
 }
