@@ -26,7 +26,7 @@ final class Migration implements MigrationInterface
 
 
     /**
-     * @param array<mixed, mixed>|mixed[] $propertiesToUpdate
+     * @param array<string, mixed>|mixed[] $propertiesToUpdate
      */
     public function __construct(string $indexType, string $mappingType, array $propertiesToUpdate, int $version)
     {
@@ -44,7 +44,7 @@ final class Migration implements MigrationInterface
 
 
     /**
-     * @return array<mixed, mixed>|mixed[]
+     * @return array<string, mixed>|mixed[]
      */
     public function getPropertiesToUpdate(): array
     {

@@ -11,7 +11,7 @@ interface MigrationInterface
 
 
     /**
-     * @return array<mixed, mixed>|mixed[]
+     * @return array<string, mixed>|mixed[]
      */
     public function getPropertiesToUpdate(): array;
 
