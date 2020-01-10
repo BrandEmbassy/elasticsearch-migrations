@@ -8,7 +8,6 @@ use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
 use Throwable;
-use const PHP_EOL;
 
 final class IndexMappingPartialUpdater
 {
@@ -46,15 +45,13 @@ final class IndexMappingPartialUpdater
         string $indexName
     ): void {
         $esIndex = $esClient->getIndex($indexName);
-        $esType = $esIndex->getType($migrationDefinition->getIndexType());
+        $esType = $esIndex->getType($migrationDefinition->getMappingType());
 
-//        $mapping = new Mapping();
-//        $mapping->setType($esType);
-//        $mapping->setProperties($migrationDefinition->getPropertiesToUpdate());
-//
-//        $mapping->send();
-//        $esClient->getIndex($indexName)->refresh();
+        $mapping = new Mapping();
+        $mapping->setType($esType);
+        $mapping->setProperties($migrationDefinition->getPropertiesToUpdate());
 
-        echo $indexName . ' SUCCESS ' . $migrationDefinition->getVersion() . PHP_EOL;
+        $mapping->send();
+        $esClient->getIndex($indexName)->refresh();
     }
 }
