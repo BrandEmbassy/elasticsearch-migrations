@@ -47,12 +47,12 @@ final class MappingUpdateFailedException extends Exception
 
     public static function createFromElasticSearchException(
         ElasticsearchException $exception,
-        MigrationInterface $migrationDefinition,
+        MigrationInterface $migration,
         ?int $lastVersion
     ): self {
         return self::create(
             sprintf('%s: %s', $exception->getExceptionName(), $exception->getMessage()),
-            $migrationDefinition,
+            $migration,
             $lastVersion
         );
     }
@@ -60,9 +60,9 @@ final class MappingUpdateFailedException extends Exception
 
     public static function create(
         string $message,
-        MigrationInterface $migrationDefinition,
+        MigrationInterface $migration,
         ?int $lastVersion
     ): self {
-        return new self($message, $migrationDefinition, $lastVersion);
+        return new self($message, $migration, $lastVersion);
     }
 }

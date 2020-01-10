@@ -21,6 +21,9 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class MigrationExecutorTest extends TestCase
 {
     use MockeryPHPUnitIntegration;

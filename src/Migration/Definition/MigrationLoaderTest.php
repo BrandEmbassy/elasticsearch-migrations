@@ -6,12 +6,20 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Configuration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class MigrationLoaderTest extends TestCase
 {
     public function testLoadMigrationsInCorrectOrder(): void
     {
         $configuration = new Configuration(__DIR__ . '/__fixtures__');
         $migrationsLoader = new MigrationsLoader($configuration, new MigrationParser());
+
+        // test if files are loaded only once from file system
+        $migrationsLoader->loadMigrations();
+        $migrationsLoader->loadMigrations();
+        $migrationsLoader->loadMigrations();
 
         $migrations = $migrationsLoader->loadMigrations();
 

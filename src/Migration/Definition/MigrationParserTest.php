@@ -6,6 +6,9 @@ use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class MigrationParserTest extends TestCase
 {
     public function testParseToObject(): void
@@ -29,6 +32,26 @@ final class MigrationParserTest extends TestCase
                 ],
             ],
             $migration->getPropertiesToUpdate()
+        );
+    }
+
+
+    public function testParseToJson(): void
+    {
+        $migration = new Migration('testIndex', 'default', ['foo' => 'bar'], 12345);
+
+        $migrationParser = new MigrationParser();
+
+        Assert::assertSame(
+            '{
+    "version": 12345,
+    "indexType": "testIndex",
+    "mappingType": "default",
+    "propertiesToUpdate": {
+        "foo": "bar"
+    }
+}',
+            $migrationParser->objectToJson($migration)
         );
     }
 }

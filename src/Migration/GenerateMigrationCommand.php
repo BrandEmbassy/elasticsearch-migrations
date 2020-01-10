@@ -57,6 +57,7 @@ final class GenerateMigrationCommand extends Command
             $migrationDefinition->getIndexType(),
             $migrationDefinition->getVersion()
         );
+
         FileSystem::write($fileName, $this->migrationParser->objectToJson($migrationDefinition));
 
         return 0;
