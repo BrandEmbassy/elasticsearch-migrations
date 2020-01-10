@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\ElasticSearchMigrations\Migration;
+namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
 use Nette\Utils\Json;
 
@@ -12,7 +12,7 @@ final class MigrationParser implements MigrationParserInterface
     private const VERSION = 'version';
 
 
-    public function objectToJson(MigrationDefinitionInterface $definition): string
+    public function objectToJson(MigrationInterface $definition): string
     {
         $migrationData = [
             self::VERSION => $definition->getVersion(),
@@ -25,11 +25,11 @@ final class MigrationParser implements MigrationParserInterface
     }
 
 
-    public function jsonToObject(string $json): MigrationDefinitionInterface
+    public function jsonToObject(string $json): MigrationInterface
     {
         $fileData = Json::decode($json, Json::FORCE_ARRAY);
 
-        return new MigrationDefinition(
+        return new Migration(
             $fileData[self::INDEX_TYPE],
             $fileData[self::MAPPING_TYPE],
             $fileData[self::PROPERTIES_TO_UPDATE],

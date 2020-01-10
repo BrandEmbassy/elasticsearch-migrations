@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\ElasticSearchMigrations\Migration;
+namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-final class MigrationDefinition implements MigrationDefinitionInterface
+final class Migration implements MigrationInterface
 {
     /**
      * @var string
@@ -10,7 +10,7 @@ final class MigrationDefinition implements MigrationDefinitionInterface
     private $mappingType;
 
     /**
-     * @var mixed[]
+     * @var array<mixed, mixed>|mixed[]
      */
     private $propertiesToUpdate;
 
@@ -25,6 +25,9 @@ final class MigrationDefinition implements MigrationDefinitionInterface
     private $indexType;
 
 
+    /**
+     * @param array<mixed, mixed>|mixed[] $propertiesToUpdate
+     */
     public function __construct(string $indexType, string $mappingType, array $propertiesToUpdate, int $version)
     {
         $this->indexType = $indexType;
@@ -41,7 +44,7 @@ final class MigrationDefinition implements MigrationDefinitionInterface
 
 
     /**
-     * @return mixed[]
+     * @return array<mixed, mixed>|mixed[]
      */
     public function getPropertiesToUpdate(): array
     {

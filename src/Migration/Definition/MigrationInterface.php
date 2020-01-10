@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\ElasticSearchMigrations\Migration;
+namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-interface MigrationDefinitionInterface
+interface MigrationInterface
 {
     public function getIndexType(): string;
 
@@ -10,6 +10,9 @@ interface MigrationDefinitionInterface
     public function getMappingType(): string;
 
 
+    /**
+     * @return array<mixed, mixed>|mixed[]
+     */
     public function getPropertiesToUpdate(): array;
 
 

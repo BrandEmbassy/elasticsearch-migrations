@@ -1,5 +1,6 @@
 {
     "name": "brandembassy/elasticsearch-migrations",
+    "license": "MIT",
     "type": "library",
     "description": "",
     "autoload": {
@@ -19,5 +20,14 @@
             "type": "git",
             "url": "https://github.com/BrandEmbassy/Elastica.git"
         }
-    ]
+    ],
+    "require-dev": {
+        "brandembassy/coding-standard": "^8.0",
+        "phpunit/phpunit": "^8.5"
+    },
+    "scripts": {
+        "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
+        "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
+        "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src"
+    }
 }

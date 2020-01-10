@@ -2,7 +2,7 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
-final class MigrationConfig
+final class Configuration
 {
     /**
      * @var string

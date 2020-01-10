@@ -2,9 +2,9 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Index;
 
-use BrandEmbassy\ElasticSearchMigrations\Migration\MigrationDefinitionInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
 
 interface IndexNameResolverInterface
 {
-    public function getIndexName(MigrationDefinitionInterface $migrationDefinition): string;
+    public function getIndexName(MigrationInterface $migrationDefinition): string;
 }
