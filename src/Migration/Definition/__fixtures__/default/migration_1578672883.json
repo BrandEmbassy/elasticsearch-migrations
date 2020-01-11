@@ -1,0 +1,14 @@
+{
+  "version": 1578672883,
+  "mappingType": "default",
+  "propertiesToUpdate": {
+    "id": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
