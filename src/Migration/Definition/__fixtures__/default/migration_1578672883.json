@@ -1,12 +1,11 @@
 {
-  "version": 1578674026,
-  "indexType": "phpunit",
+  "version": 1578672883,
   "mappingType": "default",
   "propertiesToUpdate": {
-    "author": {
+    "id": {
       "type": "text",
       "fields": {
-        "name": {
+        "keyword": {
           "type": "keyword"
         }
       }

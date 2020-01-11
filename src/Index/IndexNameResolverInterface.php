@@ -6,5 +6,5 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface
 
 interface IndexNameResolverInterface
 {
-    public function getIndexName(MigrationInterface $migrationDefinition): string;
+    public function getIndexName(MigrationInterface $migrationDefinition, string $indexType): string;
 }

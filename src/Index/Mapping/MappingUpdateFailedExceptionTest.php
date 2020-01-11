@@ -10,7 +10,7 @@ final class MappingUpdateFailedExceptionTest extends TestCase
 {
     public function testGetValidObjects(): void
     {
-        $migration = new Migration('testIndex', 'default', ['foo' => 'bar'], 2);
+        $migration = new Migration('default', ['foo' => 'bar'], 2);
         $exception = MappingUpdateFailedException::create('Foo', $migration, 1);
 
         Assert::assertSame(1, $exception->getLastVersion());

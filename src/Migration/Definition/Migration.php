@@ -19,27 +19,15 @@ final class Migration implements MigrationInterface
      */
     private $version;
 
-    /**
-     * @var string
-     */
-    private $indexType;
-
 
     /**
      * @param array<string, mixed>|mixed[] $propertiesToUpdate
      */
-    public function __construct(string $indexType, string $mappingType, array $propertiesToUpdate, int $version)
+    public function __construct(string $mappingType, array $propertiesToUpdate, int $version)
     {
-        $this->indexType = $indexType;
         $this->mappingType = $mappingType;
         $this->propertiesToUpdate = $propertiesToUpdate;
         $this->version = $version;
-    }
-
-
-    public function getIndexType(): string
-    {
-        return $this->indexType;
     }
 
 

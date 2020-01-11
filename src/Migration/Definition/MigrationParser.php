@@ -6,7 +6,6 @@ use Nette\Utils\Json;
 
 final class MigrationParser implements MigrationParserInterface
 {
-    private const INDEX_TYPE = 'indexType';
     private const MAPPING_TYPE = 'mappingType';
     private const PROPERTIES_TO_UPDATE = 'propertiesToUpdate';
     private const VERSION = 'version';
@@ -16,7 +15,6 @@ final class MigrationParser implements MigrationParserInterface
     {
         $migrationData = [
             self::VERSION => $definition->getVersion(),
-            self::INDEX_TYPE => $definition->getIndexType(),
             self::MAPPING_TYPE => $definition->getMappingType(),
             self::PROPERTIES_TO_UPDATE => $definition->getPropertiesToUpdate(),
         ];
@@ -30,7 +28,6 @@ final class MigrationParser implements MigrationParserInterface
         $fileData = Json::decode($json, Json::FORCE_ARRAY);
 
         return new Migration(
-            $fileData[self::INDEX_TYPE],
             $fileData[self::MAPPING_TYPE],
             $fileData[self::PROPERTIES_TO_UPDATE],
             $fileData[self::VERSION]

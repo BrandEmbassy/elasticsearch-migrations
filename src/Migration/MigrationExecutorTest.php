@@ -27,6 +27,7 @@ use Throwable;
 final class MigrationExecutorTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
+
     private const TYPE_NAME = 'foo';
 
     /**
@@ -58,15 +59,15 @@ final class MigrationExecutorTest extends TestCase
                 Mockery::on(
                     static function (Put $put): bool {
                         return $put->getBody() === [
-                                self::TYPE_NAME => [
-                                    'properties' => [
-                                        'id' => [
-                                            'type' => 'text',
-                                            'fields' => ['keyword' => ['type' => 'keyword']],
-                                        ],
+                            self::TYPE_NAME => [
+                                'properties' => [
+                                    'id' => [
+                                        'type' => 'text',
+                                        'fields' => ['keyword' => ['type' => 'keyword']],
                                     ],
                                 ],
-                            ];
+                            ],
+                        ];
                     }
                 )
             )
@@ -78,15 +79,15 @@ final class MigrationExecutorTest extends TestCase
                 Mockery::on(
                     static function (Put $put): bool {
                         return $put->getBody() === [
-                                self::TYPE_NAME => [
-                                    'properties' => [
-                                        'author' => [
-                                            'type' => 'text',
-                                            'fields' => ['name' => ['type' => 'keyword']],
-                                        ],
+                            self::TYPE_NAME => [
+                                'properties' => [
+                                    'author' => [
+                                        'type' => 'text',
+                                        'fields' => ['name' => ['type' => 'keyword']],
                                     ],
                                 ],
-                            ];
+                            ],
+                        ];
                     }
                 )
             )
@@ -94,11 +95,16 @@ final class MigrationExecutorTest extends TestCase
             ->andReturn(new Response(''));
 
         $this->elasticSearchClientMock->shouldReceive('getIndex')
-            ->with('testName')
+            ->with('default')
             ->times(4)
             ->andReturn($elasticSearchIndexMock);
 
-        $migrationExecutor->migrate($this->elasticSearchClientMock, null, new IndexNameResolver('testName'));
+        $migrationExecutor->migrate(
+            $this->elasticSearchClientMock,
+            null,
+            new IndexNameResolver(),
+            'default'
+        );
     }
 
 
@@ -118,15 +124,15 @@ final class MigrationExecutorTest extends TestCase
                 Mockery::on(
                     static function (Put $put): bool {
                         return $put->getBody() === [
-                                self::TYPE_NAME => [
-                                    'properties' => [
-                                        'author' => [
-                                            'type' => 'text',
-                                            'fields' => ['name' => ['type' => 'keyword']],
-                                        ],
+                            self::TYPE_NAME => [
+                                'properties' => [
+                                    'author' => [
+                                        'type' => 'text',
+                                        'fields' => ['name' => ['type' => 'keyword']],
                                     ],
                                 ],
-                            ];
+                            ],
+                        ];
                     }
                 )
             )
@@ -134,11 +140,16 @@ final class MigrationExecutorTest extends TestCase
             ->andReturn(new Response(''));
 
         $this->elasticSearchClientMock->shouldReceive('getIndex')
-            ->with('testName')
+            ->with('default')
             ->times(2)
             ->andReturn($elasticSearchIndexMock);
 
-        $migrationExecutor->migrate($this->elasticSearchClientMock, 1578672890, new IndexNameResolver('testName'));
+        $migrationExecutor->migrate(
+            $this->elasticSearchClientMock,
+            1578672890,
+            new IndexNameResolver(),
+            'default'
+        );
     }
 
 
@@ -154,7 +165,12 @@ final class MigrationExecutorTest extends TestCase
         $this->expectException(MissingConnectionException::class);
         $this->expectErrorMessage('Can\'t establish ElasticSearch connection');
 
-        $migrationExecutor->migrate($this->elasticSearchClientMock, null, new IndexNameResolver('testName'));
+        $migrationExecutor->migrate(
+            $this->elasticSearchClientMock,
+            null,
+            new IndexNameResolver(),
+            'default'
+        );
     }
 
 
@@ -173,17 +189,25 @@ final class MigrationExecutorTest extends TestCase
             ->andReturnTrue();
 
         $this->elasticSearchClientMock->shouldReceive('getIndex')
-            ->with('testName')
+            ->with('default')
             ->once()
             ->andThrow($elasticSearchException);
 
         $this->expectException(MappingUpdateFailedException::class);
         $this->expectErrorMessage($expectedExceptionMessage);
 
-        $migrationExecutor->migrate($this->elasticSearchClientMock, null, new IndexNameResolver('testName'));
+        $migrationExecutor->migrate(
+            $this->elasticSearchClientMock,
+            null,
+            new IndexNameResolver(),
+            'default'
+        );
     }
 
 
+    /**
+     * @return string[][]|Exception[][]
+     */
     public function mappingUpdateFailedDataProvider(): array
     {
         $responseError = 'MapperParsingException[No handler for type [text] declared on field [id]]';

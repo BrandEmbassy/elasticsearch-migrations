@@ -6,20 +6,8 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface
 
 final class IndexNameResolver implements IndexNameResolverInterface
 {
-    /**
-     * @var string
-     */
-    private $indexName;
-
-
-    public function __construct(string $indexName)
+    public function getIndexName(MigrationInterface $migrationDefinition, string $indexType): string
     {
-        $this->indexName = $indexName;
-    }
-
-
-    public function getIndexName(MigrationInterface $migrationDefinition): string
-    {
-        return $this->indexName;
+        return $indexType;
     }
 }

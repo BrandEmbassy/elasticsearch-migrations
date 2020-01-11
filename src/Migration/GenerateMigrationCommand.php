@@ -49,12 +49,12 @@ final class GenerateMigrationCommand extends Command
         /** @var string $mappingType */
         $mappingType = $input->getArgument('mappingType');
 
-        $migrationDefinition = new Migration($indexType, $mappingType, [], time());
+        $migrationDefinition = new Migration($mappingType, ['foo' => 'bar'], time());
 
         $fileName = sprintf(
-            '%s/migration_%s_%s.json',
+            '%s/%s/migration_%s.json',
             $this->migrationConfig->getMigrationsDirectory(),
-            $migrationDefinition->getIndexType(),
+            $indexType,
             $migrationDefinition->getVersion()
         );
 

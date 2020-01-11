@@ -4,9 +4,6 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
 interface MigrationInterface
 {
-    public function getIndexType(): string;
-
-
     public function getMappingType(): string;
 
 

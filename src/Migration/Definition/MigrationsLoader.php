@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use SplFileInfo;
+use function sprintf;
 use function uasort;
 
 final class MigrationsLoader implements MigrationsLoaderInterface
@@ -38,14 +39,16 @@ final class MigrationsLoader implements MigrationsLoaderInterface
     /**
      * @return Collection<int, MigrationInterface>|MigrationInterface[]
      */
-    public function loadMigrations(): Collection
+    public function loadMigrations(string $indexType): Collection
     {
         if ($this->loadedMigrations !== null) {
             return $this->loadedMigrations;
         }
 
+        $migrationsDirectory = sprintf('%s/%s', $this->configuration->getMigrationsDirectory(), $indexType);
+
         /** @var SplFileInfo[] $migrationsSearch */
-        $migrationsSearch = Finder::findFiles('*.json')->in($this->configuration->getMigrationsDirectory());
+        $migrationsSearch = Finder::findFiles('*.json')->in($migrationsDirectory);
 
         $migrations = [];
 
@@ -56,7 +59,7 @@ final class MigrationsLoader implements MigrationsLoaderInterface
         uasort(
             $migrations,
             static function (MigrationInterface $migrationA, MigrationInterface $migrationB): int {
-                return $migrationA->getVersion() > $migrationB->getVersion() ? 1 : -1;
+                return $migrationA->getVersion() < $migrationB->getVersion() ? -1 : 1;
             }
         );
 

@@ -23,14 +23,14 @@ final class MigrationExecutor
     }
 
 
-    public function migrate(Client $esClient, ?int $lastVersion, IndexNameResolverInterface $indexNameResolver): ?int
+    public function migrate(Client $esClient, ?int $lastVersion, IndexNameResolverInterface $indexNameResolver, string $indexType): ?int
     {
-        $migrations = $this->getMigrations($lastVersion);
+        $migrations = $this->getMigrations($lastVersion, $indexType);
 
         $lastMigratedVersion = $lastVersion;
 
         foreach ($migrations as $migration) {
-            $indexName = $indexNameResolver->getIndexName($migration);
+            $indexName = $indexNameResolver->getIndexName($migration, $indexType);
 
             $indexMappingPartialUpdater = new IndexMappingPartialUpdater($esClient, $indexName);
 
@@ -46,9 +46,9 @@ final class MigrationExecutor
     /**
      * @return Collection<int, MigrationInterface>|MigrationInterface[]
      */
-    private function getMigrations(?int $lastVersion): Collection
+    private function getMigrations(?int $lastVersion, string $indexType): Collection
     {
-        $allMigrations = $this->migrationsLoader->loadMigrations();
+        $allMigrations = $this->migrationsLoader->loadMigrations($indexType);
 
         if ($lastVersion === null) {
             return $allMigrations;

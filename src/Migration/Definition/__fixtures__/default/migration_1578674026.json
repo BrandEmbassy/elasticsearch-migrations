@@ -1,12 +1,11 @@
 {
-  "version": 1578672883,
-  "indexType": "test",
+  "version": 1578674026,
   "mappingType": "default",
   "propertiesToUpdate": {
-    "id": {
+    "author": {
       "type": "text",
       "fields": {
-        "keyword": {
+        "name": {
           "type": "keyword"
         }
       }

@@ -9,5 +9,5 @@ interface MigrationsLoaderInterface
     /**
      * @return Collection<int, MigrationInterface>|MigrationInterface[]
      */
-    public function loadMigrations(): Collection;
+    public function loadMigrations(string $indexType): Collection;
 }

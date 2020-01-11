@@ -17,14 +17,21 @@ final class MigrationLoaderTest extends TestCase
         $migrationsLoader = new MigrationsLoader($configuration, new MigrationParser());
 
         // test if files are loaded only once from file system
-        $migrationsLoader->loadMigrations();
-        $migrationsLoader->loadMigrations();
-        $migrationsLoader->loadMigrations();
+        $migrationsLoader->loadMigrations('default');
+        $migrationsLoader->loadMigrations('default');
+        $migrationsLoader->loadMigrations('default');
 
-        $migrations = $migrationsLoader->loadMigrations();
+        $migrations = $migrationsLoader->loadMigrations('default');
 
         Assert::assertCount(2, $migrations);
-        Assert::assertSame(1578672883, $migrations[0]->getVersion());
-        Assert::assertSame(1578674026, $migrations[1]->getVersion());
+
+        /** @var MigrationInterface $firstMigration */
+        $firstMigration = $migrations->first();
+
+        /** @var MigrationInterface $lastMigration */
+        $lastMigration = $migrations->last();
+
+        Assert::assertSame(1578672883, $firstMigration->getVersion());
+        Assert::assertSame(1578674026, $lastMigration->getVersion());
     }
 }

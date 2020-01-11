@@ -16,10 +16,9 @@ final class MigrationParserTest extends TestCase
         $migrationParser = new MigrationParser();
 
         $migration = $migrationParser->jsonToObject(
-            FileSystem::read(__DIR__ . '/__fixtures__/migration_test_1578672883.json')
+            FileSystem::read(__DIR__ . '/__fixtures__/default/migration_1578672883.json')
         );
 
-        Assert::assertSame('test', $migration->getIndexType());
         Assert::assertSame('default', $migration->getMappingType());
         Assert::assertSame(1578672883, $migration->getVersion());
         Assert::assertSame(
@@ -38,14 +37,13 @@ final class MigrationParserTest extends TestCase
 
     public function testParseToJson(): void
     {
-        $migration = new Migration('testIndex', 'default', ['foo' => 'bar'], 12345);
+        $migration = new Migration('default', ['foo' => 'bar'], 12345);
 
         $migrationParser = new MigrationParser();
 
         Assert::assertSame(
             '{
     "version": 12345,
-    "indexType": "testIndex",
     "mappingType": "default",
     "propertiesToUpdate": {
         "foo": "bar"

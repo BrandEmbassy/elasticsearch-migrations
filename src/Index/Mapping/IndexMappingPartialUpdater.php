@@ -47,13 +47,15 @@ final class IndexMappingPartialUpdater
             throw MappingUpdateFailedException::createFromElasticSearchException(
                 $exception->getElasticsearchException(),
                 $migrationDefinition,
-                $lastMigratedVersion
+                $lastMigratedVersion,
+                $exception
             );
         } catch (Throwable $exception) {
             throw MappingUpdateFailedException::create(
                 $exception->getMessage(),
                 $migrationDefinition,
-                $lastMigratedVersion
+                $lastMigratedVersion,
+                $exception
             );
         }
     }
