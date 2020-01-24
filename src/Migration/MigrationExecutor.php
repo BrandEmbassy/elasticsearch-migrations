@@ -3,7 +3,7 @@
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
 use BrandEmbassy\ElasticSearchMigrations\Index\IndexNameResolverInterface;
-use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\IndexMappingPartialUpdater;
+use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\IndexMappingPartialUpdaterFactory;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoader;
 use Doctrine\Common\Collections\Collection;
@@ -16,15 +16,27 @@ final class MigrationExecutor
      */
     private $migrationsLoader;
 
+    /**
+     * @var IndexMappingPartialUpdaterFactory
+     */
+    private $indexMappingPartialUpdaterFactory;
 
-    public function __construct(MigrationsLoader $migrationsLoader)
-    {
+
+    public function __construct(
+        MigrationsLoader $migrationsLoader,
+        IndexMappingPartialUpdaterFactory $indexMappingPartialUpdaterFactory
+    ) {
         $this->migrationsLoader = $migrationsLoader;
+        $this->indexMappingPartialUpdaterFactory = $indexMappingPartialUpdaterFactory;
     }
 
 
-    public function migrate(Client $esClient, ?int $lastVersion, IndexNameResolverInterface $indexNameResolver, string $indexType): ?int
-    {
+    public function migrate(
+        Client $elasticSearchClient,
+        ?int $lastVersion,
+        IndexNameResolverInterface $indexNameResolver,
+        string $indexType
+    ): ?int {
         $migrations = $this->getMigrations($lastVersion, $indexType);
 
         $lastMigratedVersion = $lastVersion;
@@ -32,7 +44,10 @@ final class MigrationExecutor
         foreach ($migrations as $migration) {
             $indexName = $indexNameResolver->getIndexName($migration, $indexType);
 
-            $indexMappingPartialUpdater = new IndexMappingPartialUpdater($esClient, $indexName);
+            $indexMappingPartialUpdater = $this->indexMappingPartialUpdaterFactory->create(
+                $elasticSearchClient,
+                $indexName
+            );
 
             $indexMappingPartialUpdater->update($migration, $lastMigratedVersion);
 

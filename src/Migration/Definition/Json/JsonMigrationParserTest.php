@@ -19,18 +19,17 @@ final class JsonMigrationParserTest extends TestCase
             FileSystem::read(__DIR__ . '/../__fixtures__/default/migration_1578672883.json')
         );
 
-        Assert::assertSame('default', $migration->getMappingType());
-        Assert::assertSame(1578672883, $migration->getVersion());
-        Assert::assertSame(
-            [
-                'id' => [
-                    'type' => 'text',
-                    'fields' => [
-                        'keyword' => ['type' => 'keyword'],
-                    ],
+        $expectedMigrationPropertiesToUpdate = [
+            'id' => [
+                'type' => 'text',
+                'fields' => [
+                    'keyword' => ['type' => 'keyword'],
                 ],
             ],
-            $migration->getPropertiesToUpdate()
-        );
+        ];
+
+        Assert::assertSame('default', $migration->getMappingType());
+        Assert::assertSame(1578672883, $migration->getVersion());
+        Assert::assertSame($expectedMigrationPropertiesToUpdate, $migration->getPropertiesToUpdate());
     }
 }

@@ -45,16 +45,7 @@ final class DirectoryMigrationsLoader implements MigrationsLoader
             return $this->loadedMigrations;
         }
 
-        $migrationsDirectory = sprintf('%s/%s', $this->configuration->getMigrationsDirectory(), $indexType);
-
-        /** @var SplFileInfo[] $migrationsSearch */
-        $migrationsSearch = Finder::findFiles('*.json')->in($migrationsDirectory);
-
-        $migrations = [];
-
-        foreach ($migrationsSearch as $migrationFileInfo) {
-            $migrations[] = $this->migrationParser->parse(FileSystem::read($migrationFileInfo->getPathname()));
-        }
+        $migrations = $this->parseMigrationsFromDirectory($indexType);
 
         uasort(
             $migrations,
@@ -66,5 +57,25 @@ final class DirectoryMigrationsLoader implements MigrationsLoader
         $this->loadedMigrations = new ArrayCollection($migrations);
 
         return $this->loadedMigrations;
+    }
+
+
+    /**
+     * @return Migration[]
+     */
+    private function parseMigrationsFromDirectory(string $indexType): array
+    {
+        $migrationsDirectory = sprintf('%s/%s', $this->configuration->getMigrationsDirectory(), $indexType);
+
+        /** @var SplFileInfo[] $migrationFiles */
+        $migrationFiles = Finder::findFiles('*.json')->in($migrationsDirectory);
+
+        $migrations = [];
+
+        foreach ($migrationFiles as $migrationFileInfo) {
+            $migrations[] = $this->migrationParser->parse(FileSystem::read($migrationFileInfo->getPathname()));
+        }
+
+        return $migrations;
     }
 }

@@ -4,6 +4,7 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
 use BrandEmbassy\ElasticSearchMigrations\Client\MissingConnectionException;
 use BrandEmbassy\ElasticSearchMigrations\Index\IndexNameResolver;
+use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\BasicIndexMappingPartialUpdaterFactory;
 use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\MappingUpdateFailedException;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\DirectoryMigrationsLoader;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Json\JsonMigrationParser;
@@ -258,6 +259,6 @@ final class MigrationExecutorTest extends TestCase
         $configuration = new Configuration(__DIR__ . '/Definition/__fixtures__');
         $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
 
-        return new MigrationExecutor($migrationsLoader);
+        return new MigrationExecutor($migrationsLoader, new BasicIndexMappingPartialUpdaterFactory());
     }
 }
