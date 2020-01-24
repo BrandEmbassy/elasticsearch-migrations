@@ -2,7 +2,7 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Index\Mapping;
 
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use Elastica\Exception\ElasticsearchException;
 use Exception;
 use Throwable;
@@ -16,14 +16,14 @@ final class MappingUpdateFailedException extends Exception
     private $lastVersion;
 
     /**
-     * @var MigrationInterface
+     * @var Migration
      */
     private $migration;
 
 
     public function __construct(
         string $message,
-        MigrationInterface $migration,
+        Migration $migration,
         ?int $lastVersion,
         ?Throwable $previous = null
     ) {
@@ -39,7 +39,7 @@ final class MappingUpdateFailedException extends Exception
     }
 
 
-    public function getMigration(): MigrationInterface
+    public function getMigration(): Migration
     {
         return $this->migration;
     }
@@ -47,7 +47,7 @@ final class MappingUpdateFailedException extends Exception
 
     public static function createFromElasticSearchException(
         ElasticsearchException $exception,
-        MigrationInterface $migration,
+        Migration $migration,
         ?int $lastVersion,
         Throwable $previous
     ): self {
@@ -62,7 +62,7 @@ final class MappingUpdateFailedException extends Exception
 
     public static function create(
         string $message,
-        MigrationInterface $migration,
+        Migration $migration,
         ?int $lastVersion,
         ?Throwable $previous = null
     ): self {

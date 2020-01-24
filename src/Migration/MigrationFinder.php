@@ -2,24 +2,24 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoaderInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoader;
 
 final class MigrationFinder
 {
     /**
-     * @var MigrationsLoaderInterface
+     * @var MigrationsLoader
      */
     private $migrationsLoader;
 
 
-    public function __construct(MigrationsLoaderInterface $migrationsLoader)
+    public function __construct(MigrationsLoader $migrationsLoader)
     {
         $this->migrationsLoader = $migrationsLoader;
     }
 
 
-    public function findLastMigration(string $indexType): ?MigrationInterface
+    public function findLastMigration(string $indexType): ?Migration
     {
         $lastMigration = $this->migrationsLoader->loadMigrations($indexType)->last();
 

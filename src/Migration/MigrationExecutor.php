@@ -4,20 +4,20 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
 use BrandEmbassy\ElasticSearchMigrations\Index\IndexNameResolverInterface;
 use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\IndexMappingPartialUpdater;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoaderInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoader;
 use Doctrine\Common\Collections\Collection;
 use Elastica\Client;
 
 final class MigrationExecutor
 {
     /**
-     * @var MigrationsLoaderInterface
+     * @var MigrationsLoader
      */
     private $migrationsLoader;
 
 
-    public function __construct(MigrationsLoaderInterface $migrationsLoader)
+    public function __construct(MigrationsLoader $migrationsLoader)
     {
         $this->migrationsLoader = $migrationsLoader;
     }
@@ -44,7 +44,7 @@ final class MigrationExecutor
 
 
     /**
-     * @return Collection<int, MigrationInterface>|MigrationInterface[]
+     * @return Collection<int, Migration>|Migration[]
      */
     private function getMigrations(?int $lastVersion, string $indexType): Collection
     {
@@ -55,7 +55,7 @@ final class MigrationExecutor
         }
 
         return $allMigrations->filter(
-            static function (MigrationInterface $migrationDefinition) use ($lastVersion): bool {
+            static function (Migration $migrationDefinition) use ($lastVersion): bool {
                 return $migrationDefinition->getVersion() > $lastVersion;
             }
         );

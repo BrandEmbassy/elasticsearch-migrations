@@ -2,7 +2,7 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-final class Migration implements MigrationInterface
+final class Migration
 {
     /**
      * @var string

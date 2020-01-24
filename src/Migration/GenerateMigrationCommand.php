@@ -3,7 +3,7 @@
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationParserInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationSerializer;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,16 +20,16 @@ final class GenerateMigrationCommand extends Command
     private $migrationConfig;
 
     /**
-     * @var MigrationParserInterface
+     * @var MigrationSerializer
      */
-    private $migrationParser;
+    private $migrationSerializer;
 
 
-    public function __construct(Configuration $migrationConfig, MigrationParserInterface $migrationParser)
+    public function __construct(Configuration $migrationConfig, MigrationSerializer $migrationSerializer)
     {
         parent::__construct();
         $this->migrationConfig = $migrationConfig;
-        $this->migrationParser = $migrationParser;
+        $this->migrationSerializer = $migrationSerializer;
     }
 
 
@@ -49,16 +49,16 @@ final class GenerateMigrationCommand extends Command
         /** @var string $mappingType */
         $mappingType = $input->getArgument('mappingType');
 
-        $migrationDefinition = new Migration($mappingType, ['foo' => 'bar'], time());
+        $migration = new Migration($mappingType, ['foo' => 'bar'], time());
 
         $fileName = sprintf(
             '%s/%s/migration_%s.json',
             $this->migrationConfig->getMigrationsDirectory(),
             $indexType,
-            $migrationDefinition->getVersion()
+            $migration->getVersion()
         );
 
-        FileSystem::write($fileName, $this->migrationParser->objectToJson($migrationDefinition));
+        FileSystem::write($fileName, $this->migrationSerializer->serialize($migration));
 
         return 0;
     }

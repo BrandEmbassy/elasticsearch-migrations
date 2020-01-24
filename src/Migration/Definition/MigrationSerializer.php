@@ -2,7 +2,7 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-interface MigrationParser
+interface MigrationSerializer
 {
-    public function parse(string $rawMigration): Migration;
+    public function serialize(Migration $migration): string;
 }

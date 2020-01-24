@@ -5,8 +5,8 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Client\MissingConnectionException;
 use BrandEmbassy\ElasticSearchMigrations\Index\IndexNameResolver;
 use BrandEmbassy\ElasticSearchMigrations\Index\Mapping\MappingUpdateFailedException;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationParser;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoader;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\DirectoryMigrationsLoader;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Json\JsonMigrationParser;
 use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elastica\Index;
@@ -20,6 +20,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Throwable;
+use function assert;
 
 /**
  * @codeCoverageIgnore
@@ -181,6 +182,8 @@ final class MigrationExecutorTest extends TestCase
         Throwable $elasticSearchException,
         string $expectedExceptionMessage
     ): void {
+        assert($elasticSearchException instanceof Exception);
+
         $migrationExecutor = $this->createMigrationExecutor();
 
         $this->elasticSearchClientMock->shouldReceive('hasConnection')
@@ -253,7 +256,7 @@ final class MigrationExecutorTest extends TestCase
     private function createMigrationExecutor(): MigrationExecutor
     {
         $configuration = new Configuration(__DIR__ . '/Definition/__fixtures__');
-        $migrationsLoader = new MigrationsLoader($configuration, new MigrationParser());
+        $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
 
         return new MigrationExecutor($migrationsLoader);
     }

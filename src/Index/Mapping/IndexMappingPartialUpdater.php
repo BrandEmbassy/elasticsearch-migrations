@@ -3,7 +3,7 @@
 namespace BrandEmbassy\ElasticSearchMigrations\Index\Mapping;
 
 use BrandEmbassy\ElasticSearchMigrations\Client\MissingConnectionException;
-use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationInterface;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elastica\Type\Mapping;
@@ -34,7 +34,7 @@ final class IndexMappingPartialUpdater
      * @throws MissingConnectionException
      */
     public function update(
-        MigrationInterface $migrationDefinition,
+        Migration $migration,
         ?int $lastMigratedVersion
     ): void {
         if (!$this->elasticSearchClient->hasConnection()) {
@@ -42,18 +42,18 @@ final class IndexMappingPartialUpdater
         }
 
         try {
-            $this->updateMappingForIndex($migrationDefinition);
+            $this->updateMappingForIndex($migration);
         } catch (ResponseException $exception) {
             throw MappingUpdateFailedException::createFromElasticSearchException(
                 $exception->getElasticsearchException(),
-                $migrationDefinition,
+                $migration,
                 $lastMigratedVersion,
                 $exception
             );
         } catch (Throwable $exception) {
             throw MappingUpdateFailedException::create(
                 $exception->getMessage(),
-                $migrationDefinition,
+                $migration,
                 $lastMigratedVersion,
                 $exception
             );
@@ -61,7 +61,7 @@ final class IndexMappingPartialUpdater
     }
 
 
-    private function updateMappingForIndex(MigrationInterface $migration): void
+    private function updateMappingForIndex(Migration $migration): void
     {
         $elasticSearchIndex = $this->elasticSearchClient->getIndex($this->indexName);
         $elasticSearchType = $elasticSearchIndex->getType($migration->getMappingType());

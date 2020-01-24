@@ -3,18 +3,19 @@
 namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
 use BrandEmbassy\ElasticSearchMigrations\Migration\Configuration;
+use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Json\JsonMigrationParser;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @codeCoverageIgnore
  */
-final class MigrationLoaderTest extends TestCase
+final class DirectoryMigrationLoaderTest extends TestCase
 {
     public function testLoadMigrationsInCorrectOrder(): void
     {
         $configuration = new Configuration(__DIR__ . '/__fixtures__');
-        $migrationsLoader = new MigrationsLoader($configuration, new MigrationParser());
+        $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
 
         // test if files are loaded only once from file system
         $migrationsLoader->loadMigrations('default');
@@ -25,10 +26,10 @@ final class MigrationLoaderTest extends TestCase
 
         Assert::assertCount(2, $migrations);
 
-        /** @var MigrationInterface $firstMigration */
+        /** @var Migration $firstMigration */
         $firstMigration = $migrations->first();
 
-        /** @var MigrationInterface $lastMigration */
+        /** @var Migration $lastMigration */
         $lastMigration = $migrations->last();
 
         Assert::assertSame(1578672883, $firstMigration->getVersion());

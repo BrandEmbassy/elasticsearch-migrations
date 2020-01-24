@@ -2,69 +2,12 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-use BrandEmbassy\ElasticSearchMigrations\Migration\Configuration;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Finder;
-use SplFileInfo;
-use function sprintf;
-use function uasort;
 
-final class MigrationsLoader implements MigrationsLoaderInterface
+interface MigrationsLoader
 {
     /**
-     * @var Configuration
+     * @return Collection<int, Migration>|Migration[]
      */
-    private $configuration;
-
-    /**
-     * @var MigrationParserInterface
-     */
-    private $migrationParser;
-
-    /**
-     * @var Collection<int, MigrationInterface>|MigrationInterface[]|null
-     */
-    private $loadedMigrations;
-
-
-    public function __construct(Configuration $migrationConfig, MigrationParserInterface $migrationParser)
-    {
-        $this->configuration = $migrationConfig;
-        $this->migrationParser = $migrationParser;
-    }
-
-
-    /**
-     * @return Collection<int, MigrationInterface>|MigrationInterface[]
-     */
-    public function loadMigrations(string $indexType): Collection
-    {
-        if ($this->loadedMigrations !== null) {
-            return $this->loadedMigrations;
-        }
-
-        $migrationsDirectory = sprintf('%s/%s', $this->configuration->getMigrationsDirectory(), $indexType);
-
-        /** @var SplFileInfo[] $migrationsSearch */
-        $migrationsSearch = Finder::findFiles('*.json')->in($migrationsDirectory);
-
-        $migrations = [];
-
-        foreach ($migrationsSearch as $migrationFileInfo) {
-            $migrations[] = $this->migrationParser->jsonToObject(FileSystem::read($migrationFileInfo->getPathname()));
-        }
-
-        uasort(
-            $migrations,
-            static function (MigrationInterface $migrationA, MigrationInterface $migrationB): int {
-                return $migrationA->getVersion() < $migrationB->getVersion() ? -1 : 1;
-            }
-        );
-
-        $this->loadedMigrations = new ArrayCollection($migrations);
-
-        return $this->loadedMigrations;
-    }
+    public function loadMigrations(string $indexType): Collection;
 }
