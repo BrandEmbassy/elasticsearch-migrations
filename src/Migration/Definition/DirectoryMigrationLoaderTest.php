@@ -15,14 +15,9 @@ final class DirectoryMigrationLoaderTest extends TestCase
     public function testLoadMigrationsInCorrectOrder(): void
     {
         $configuration = new Configuration(__DIR__ . '/__fixtures__');
-        $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
+        $directoryMigrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
 
-        // test if files are loaded only once from file system
-        $migrationsLoader->loadMigrations('default');
-        $migrationsLoader->loadMigrations('default');
-        $migrationsLoader->loadMigrations('default');
-
-        $migrations = $migrationsLoader->loadMigrations('default');
+        $migrations = $directoryMigrationsLoader->loadMigrations('default');
 
         Assert::assertCount(2, $migrations);
 
@@ -34,5 +29,17 @@ final class DirectoryMigrationLoaderTest extends TestCase
 
         Assert::assertSame(1578672883, $firstMigration->getVersion());
         Assert::assertSame(1578674026, $lastMigration->getVersion());
+    }
+
+
+    public function testLoadMigrationsFromDirectoryOnlyOnce(): void
+    {
+        $configuration = new Configuration(__DIR__ . '/__fixtures__');
+        $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
+
+        $firstLoad = $migrationsLoader->loadMigrations('default');
+        $secondLoad = $migrationsLoader->loadMigrations('default');
+
+        Assert::assertSame($firstLoad, $secondLoad);
     }
 }
