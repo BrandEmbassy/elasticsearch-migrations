@@ -19,7 +19,9 @@ use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\Test\TestLogger;
 use Throwable;
 use function assert;
 
@@ -37,11 +39,17 @@ final class MigrationExecutorTest extends TestCase
      */
     private $elasticSearchClientMock;
 
+    /**
+     * @var TestLogger
+     */
+    private $testLogger;
+
 
     public function setUp(): void
     {
         parent::setUp();
         $this->elasticSearchClientMock = Mockery::mock(Client::class);
+        $this->testLogger = new TestLogger();
     }
 
 
@@ -107,6 +115,17 @@ final class MigrationExecutorTest extends TestCase
             new IndexNameResolver(),
             'default'
         );
+
+        Assert::assertTrue($this->testLogger->hasInfo('default index mapping migration started, current version 0'));
+        Assert::assertTrue(
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578672883')
+        );
+        Assert::assertTrue(
+            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672883')
+        );
+        Assert::assertTrue(
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026')
+        );
     }
 
 
@@ -151,6 +170,13 @@ final class MigrationExecutorTest extends TestCase
             1578672890,
             new IndexNameResolver(),
             'default'
+        );
+
+        Assert::assertTrue(
+            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672890')
+        );
+        Assert::assertTrue(
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026')
         );
     }
 
@@ -259,6 +285,10 @@ final class MigrationExecutorTest extends TestCase
         $configuration = new Configuration(__DIR__ . '/Definition/__fixtures__');
         $migrationsLoader = new DirectoryMigrationsLoader($configuration, new JsonMigrationParser());
 
-        return new MigrationExecutor($migrationsLoader, new BasicIndexMappingPartialUpdaterFactory());
+        return new MigrationExecutor(
+            $migrationsLoader,
+            new BasicIndexMappingPartialUpdaterFactory(),
+            $this->testLogger
+        );
     }
 }
