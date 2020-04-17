@@ -12,7 +12,7 @@
     "brandembassy/elastica": "dev-6.0.2-trigger-error-fix",
     "symfony/console": "^4.3",
     "doctrine/collections": "^1.6",
-    "nette/utils": "~3.0.2",
+    "nette/utils": "^3.0",
     "nette/finder": "^2.5"
   },
   "repositories": [
