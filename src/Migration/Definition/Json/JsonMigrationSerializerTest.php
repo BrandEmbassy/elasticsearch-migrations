@@ -10,8 +10,9 @@ use function preg_replace;
 
 /**
  * @codeCoverageIgnore
+ * @final
  */
-final class JsonMigrationSerializerTest extends TestCase
+class JsonMigrationSerializerTest extends TestCase
 {
     public function testParseToJson(): void
     {
@@ -23,14 +24,14 @@ final class JsonMigrationSerializerTest extends TestCase
                     'fields' => ['name' => ['type' => 'keyword']],
                 ],
             ],
-            1578674026
+            1578674026,
         );
 
         $jsonMigrationSerializer = new JsonMigrationSerializer();
 
         $this->assertEscapedJson(
             FileSystem::read(__DIR__ . '/../__fixtures__/default/migration_1578674026.json'),
-            $jsonMigrationSerializer->serialize($migration)
+            $jsonMigrationSerializer->serialize($migration),
         );
     }
 

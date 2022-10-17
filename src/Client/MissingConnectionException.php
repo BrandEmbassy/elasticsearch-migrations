@@ -4,7 +4,10 @@ namespace BrandEmbassy\ElasticSearchMigrations\Client;
 
 use Exception;
 
-final class MissingConnectionException extends Exception
+/**
+ * @final
+ */
+class MissingConnectionException extends Exception
 {
     public static function create(): self
     {

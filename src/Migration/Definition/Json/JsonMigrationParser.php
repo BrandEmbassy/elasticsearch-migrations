@@ -6,7 +6,10 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationParser;
 use Nette\Utils\Json;
 
-final class JsonMigrationParser implements MigrationParser
+/**
+ * @final
+ */
+class JsonMigrationParser implements MigrationParser
 {
     public function parse(string $rawMigration): Migration
     {
@@ -15,7 +18,7 @@ final class JsonMigrationParser implements MigrationParser
         return new Migration(
             $fileData[JsonMigrationFields::MAPPING_TYPE],
             $fileData[JsonMigrationFields::PROPERTIES_TO_UPDATE],
-            $fileData[JsonMigrationFields::VERSION]
+            $fileData[JsonMigrationFields::VERSION],
         );
     }
 }

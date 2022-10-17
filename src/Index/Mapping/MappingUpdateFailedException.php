@@ -8,17 +8,14 @@ use Exception;
 use Throwable;
 use function sprintf;
 
-final class MappingUpdateFailedException extends Exception
+/**
+ * @final
+ */
+class MappingUpdateFailedException extends Exception
 {
-    /**
-     * @var int|null
-     */
-    private $lastVersion;
+    private ?int $lastVersion = null;
 
-    /**
-     * @var Migration
-     */
-    private $migration;
+    private Migration $migration;
 
 
     public function __construct(
@@ -55,7 +52,7 @@ final class MappingUpdateFailedException extends Exception
             sprintf('%s: %s', $exception->getExceptionName(), $exception->getMessage()),
             $migration,
             $lastVersion,
-            $previous
+            $previous,
         );
     }
 

@@ -12,22 +12,16 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use function sprintf;
 
-final class MigrationExecutor
+/**
+ * @final
+ */
+class MigrationExecutor
 {
-    /**
-     * @var MigrationsLoader
-     */
-    private $migrationsLoader;
+    private MigrationsLoader $migrationsLoader;
 
-    /**
-     * @var IndexMappingPartialUpdaterFactory
-     */
-    private $indexMappingPartialUpdaterFactory;
+    private IndexMappingPartialUpdaterFactory $indexMappingPartialUpdaterFactory;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
 
     public function __construct(
@@ -70,18 +64,18 @@ final class MigrationExecutor
         ?int $lastMigratedVersion
     ): void {
         $this->logger->info(
-            sprintf('%s index mapping migration started, current version %d', $indexName, $lastMigratedVersion ?? 0)
+            sprintf('%s index mapping migration started, current version %d', $indexName, $lastMigratedVersion ?? 0),
         );
 
         $indexMappingPartialUpdater = $this->indexMappingPartialUpdaterFactory->create(
             $elasticSearchClient,
-            $indexName
+            $indexName,
         );
 
         $indexMappingPartialUpdater->update($migration, $lastMigratedVersion);
 
         $this->logger->info(
-            sprintf('%s index mapping migration done, current version %d', $indexName, $migration->getVersion())
+            sprintf('%s index mapping migration done, current version %d', $indexName, $migration->getVersion()),
         );
     }
 
@@ -98,9 +92,7 @@ final class MigrationExecutor
         }
 
         return $allMigrations->filter(
-            static function (Migration $migrationDefinition) use ($lastVersion): bool {
-                return $migrationDefinition->getVersion() > $lastVersion;
-            }
+            static fn(Migration $migrationDefinition): bool => $migrationDefinition->getVersion() > $lastVersion,
         );
     }
 }

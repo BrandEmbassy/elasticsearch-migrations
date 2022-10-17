@@ -6,7 +6,10 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-final class MappingUpdateFailedExceptionTest extends TestCase
+/**
+ * @final
+ */
+class MappingUpdateFailedExceptionTest extends TestCase
 {
     public function testGetValidObjects(): void
     {

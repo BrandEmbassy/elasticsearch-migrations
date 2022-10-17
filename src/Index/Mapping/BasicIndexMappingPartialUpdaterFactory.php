@@ -4,7 +4,10 @@ namespace BrandEmbassy\ElasticSearchMigrations\Index\Mapping;
 
 use Elastica\Client;
 
-final class BasicIndexMappingPartialUpdaterFactory implements IndexMappingPartialUpdaterFactory
+/**
+ * @final
+ */
+class BasicIndexMappingPartialUpdaterFactory implements IndexMappingPartialUpdaterFactory
 {
     public function create(Client $elasticSearchClient, string $indexName): IndexMappingPartialUpdater
     {

@@ -8,7 +8,10 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-final class MigrationFinderTest extends TestCase
+/**
+ * @final
+ */
+class MigrationFinderTest extends TestCase
 {
     public function testFindLastMigration(): void
     {

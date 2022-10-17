@@ -7,12 +7,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class LastMigrationVersionCommand extends Command
+/**
+ * @final
+ */
+class LastMigrationVersionCommand extends Command
 {
-    /**
-     * @var MigrationFinder
-     */
-    private $migrationFinder;
+    private MigrationFinder $migrationFinder;
 
 
     public function __construct(MigrationFinder $migrationFinder)

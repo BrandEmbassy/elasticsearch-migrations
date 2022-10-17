@@ -4,7 +4,10 @@ namespace BrandEmbassy\ElasticSearchMigrations\Index;
 
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 
-final class IndexNameResolver implements IndexNameResolverInterface
+/**
+ * @final
+ */
+class IndexNameResolver implements IndexNameResolverInterface
 {
     public function getIndexName(Migration $migration, string $indexType): string
     {

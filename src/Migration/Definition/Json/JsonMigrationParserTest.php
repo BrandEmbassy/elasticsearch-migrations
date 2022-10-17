@@ -8,15 +8,16 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @codeCoverageIgnore
+ * @final
  */
-final class JsonMigrationParserTest extends TestCase
+class JsonMigrationParserTest extends TestCase
 {
     public function testParseToObject(): void
     {
         $migrationParser = new JsonMigrationParser();
 
         $migration = $migrationParser->parse(
-            FileSystem::read(__DIR__ . '/../__fixtures__/default/migration_1578672883.json')
+            FileSystem::read(__DIR__ . '/../__fixtures__/default/migration_1578672883.json'),
         );
 
         $expectedMigrationPropertiesToUpdate = [

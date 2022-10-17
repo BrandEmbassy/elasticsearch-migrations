@@ -5,12 +5,12 @@ namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationsLoader;
 
-final class MigrationFinder
+/**
+ * @final
+ */
+class MigrationFinder
 {
-    /**
-     * @var MigrationsLoader
-     */
-    private $migrationsLoader;
+    private MigrationsLoader $migrationsLoader;
 
 
     public function __construct(MigrationsLoader $migrationsLoader)

@@ -11,22 +11,19 @@ use SplFileInfo;
 use function sprintf;
 use function uasort;
 
-final class DirectoryMigrationsLoader implements MigrationsLoader
+/**
+ * @final
+ */
+class DirectoryMigrationsLoader implements MigrationsLoader
 {
-    /**
-     * @var Configuration
-     */
-    private $configuration;
+    private Configuration $configuration;
 
-    /**
-     * @var MigrationParser
-     */
-    private $migrationParser;
+    private MigrationParser $migrationParser;
 
     /**
      * @var Collection<int, Migration>|Migration[]|null
      */
-    private $loadedMigrations;
+    private ?Collection $loadedMigrations = null;
 
 
     public function __construct(Configuration $migrationConfig, MigrationParser $migrationParser)
@@ -49,9 +46,7 @@ final class DirectoryMigrationsLoader implements MigrationsLoader
 
         uasort(
             $migrations,
-            static function (Migration $migrationA, Migration $migrationB): int {
-                return $migrationA->getVersion() < $migrationB->getVersion() ? -1 : 1;
-            }
+            static fn(Migration $migrationA, Migration $migrationB): int => $migrationA->getVersion() < $migrationB->getVersion() ? -1 : 1,
         );
 
         $this->loadedMigrations = new ArrayCollection($migrations);

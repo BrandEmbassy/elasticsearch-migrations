@@ -9,8 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @codeCoverageIgnore
+ * @final
  */
-final class DirectoryMigrationLoaderTest extends TestCase
+class DirectoryMigrationLoaderTest extends TestCase
 {
     public function testLoadMigrationsInCorrectOrder(): void
     {

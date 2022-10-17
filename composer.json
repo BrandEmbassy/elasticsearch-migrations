@@ -9,7 +9,7 @@
     }
   },
   "require": {
-    "brandembassy/elastica": "dev-6.0.2-trigger-error-fix",
+    "brandembassy/elastica": "dev-opensearch as dev-6.0.2-trigger-error-fix",
     "symfony/console": "^4.3|^5.0",
     "doctrine/collections": "^1.6",
     "nette/utils": "^3.0",
@@ -32,5 +32,10 @@
     "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src",
     "phpunit": "./vendor/bin/phpunit src --no-coverage",
     "phpunit-cc": "./vendor/bin/phpunit src --coverage-html temp --whitelist src"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

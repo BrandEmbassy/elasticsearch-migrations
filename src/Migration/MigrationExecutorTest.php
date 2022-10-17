@@ -13,8 +13,7 @@ use Elastica\Exception\ResponseException;
 use Elastica\Index;
 use Elastica\Request;
 use Elastica\Response;
-use Elastica\Type;
-use Elasticsearch\Endpoints\Indices\Mapping\Put;
+use Elasticsearch\Endpoints\Indices\PutMapping;
 use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -27,22 +26,18 @@ use function assert;
 
 /**
  * @codeCoverageIgnore
+ * @final
  */
-final class MigrationExecutorTest extends TestCase
+class MigrationExecutorTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-
-    private const TYPE_NAME = 'foo';
 
     /**
      * @var Client|MockInterface
      */
     private $elasticSearchClientMock;
 
-    /**
-     * @var TestLogger
-     */
-    private $testLogger;
+    private TestLogger $testLogger;
 
 
     public function setUp(): void
@@ -67,19 +62,15 @@ final class MigrationExecutorTest extends TestCase
         $elasticSearchIndexMock->shouldReceive('requestEndpoint')
             ->with(
                 Mockery::on(
-                    static function (Put $put): bool {
-                        return $put->getBody() === [
-                            self::TYPE_NAME => [
-                                'properties' => [
-                                    'id' => [
-                                        'type' => 'text',
-                                        'fields' => ['keyword' => ['type' => 'keyword']],
-                                    ],
-                                ],
+                    static fn(PutMapping $putMapping): bool => $putMapping->getBody() === [
+                        'properties' => [
+                            'id' => [
+                                'type' => 'text',
+                                'fields' => ['keyword' => ['type' => 'keyword']],
                             ],
-                        ];
-                    }
-                )
+                        ],
+                    ],
+                ),
             )
             ->once()
             ->andReturn(new Response(''));
@@ -87,19 +78,15 @@ final class MigrationExecutorTest extends TestCase
         $elasticSearchIndexMock->shouldReceive('requestEndpoint')
             ->with(
                 Mockery::on(
-                    static function (Put $put): bool {
-                        return $put->getBody() === [
-                            self::TYPE_NAME => [
-                                'properties' => [
-                                    'author' => [
-                                        'type' => 'text',
-                                        'fields' => ['name' => ['type' => 'keyword']],
-                                    ],
-                                ],
+                    static fn(PutMapping $putMapping): bool => $putMapping->getBody() === [
+                        'properties' => [
+                            'author' => [
+                                'type' => 'text',
+                                'fields' => ['name' => ['type' => 'keyword']],
                             ],
-                        ];
-                    }
-                )
+                        ],
+                    ],
+                ),
             )
             ->once()
             ->andReturn(new Response(''));
@@ -113,18 +100,18 @@ final class MigrationExecutorTest extends TestCase
             $this->elasticSearchClientMock,
             null,
             new IndexNameResolver(),
-            'default'
+            'default',
         );
 
         Assert::assertTrue($this->testLogger->hasInfo('default index mapping migration started, current version 0'));
         Assert::assertTrue(
-            $this->testLogger->hasInfo('default index mapping migration done, current version 1578672883')
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578672883'),
         );
         Assert::assertTrue(
-            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672883')
+            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672883'),
         );
         Assert::assertTrue(
-            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026')
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026'),
         );
     }
 
@@ -143,19 +130,15 @@ final class MigrationExecutorTest extends TestCase
         $elasticSearchIndexMock->shouldReceive('requestEndpoint')
             ->with(
                 Mockery::on(
-                    static function (Put $put): bool {
-                        return $put->getBody() === [
-                            self::TYPE_NAME => [
-                                'properties' => [
-                                    'author' => [
-                                        'type' => 'text',
-                                        'fields' => ['name' => ['type' => 'keyword']],
-                                    ],
-                                ],
+                    static fn(PutMapping $putMapping): bool => $putMapping->getBody() === [
+                        'properties' => [
+                            'author' => [
+                                'type' => 'text',
+                                'fields' => ['name' => ['type' => 'keyword']],
                             ],
-                        ];
-                    }
-                )
+                        ],
+                    ],
+                ),
             )
             ->once()
             ->andReturn(new Response(''));
@@ -169,14 +152,14 @@ final class MigrationExecutorTest extends TestCase
             $this->elasticSearchClientMock,
             1578672890,
             new IndexNameResolver(),
-            'default'
+            'default',
         );
 
         Assert::assertTrue(
-            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672890')
+            $this->testLogger->hasInfo('default index mapping migration started, current version 1578672890'),
         );
         Assert::assertTrue(
-            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026')
+            $this->testLogger->hasInfo('default index mapping migration done, current version 1578674026'),
         );
     }
 
@@ -197,7 +180,7 @@ final class MigrationExecutorTest extends TestCase
             $this->elasticSearchClientMock,
             null,
             new IndexNameResolver(),
-            'default'
+            'default',
         );
     }
 
@@ -230,7 +213,7 @@ final class MigrationExecutorTest extends TestCase
             $this->elasticSearchClientMock,
             null,
             new IndexNameResolver(),
-            'default'
+            'default',
         );
     }
 
@@ -244,7 +227,7 @@ final class MigrationExecutorTest extends TestCase
 
         $responseException = new ResponseException(
             new Request(''),
-            new Response(['error' => $responseError], 500)
+            new Response(['error' => $responseError], 500),
         );
 
         return [
@@ -267,11 +250,6 @@ final class MigrationExecutorTest extends TestCase
     {
         $indexMock = Mockery::mock(Index::class);
 
-        $indexMock->shouldReceive('getType')
-            ->with('default')
-            ->times($migrationRuns)
-            ->andReturn(new Type($indexMock, self::TYPE_NAME));
-
         $indexMock->shouldReceive('refresh')
             ->withNoArgs()
             ->times($migrationRuns);
@@ -288,7 +266,7 @@ final class MigrationExecutorTest extends TestCase
         return new MigrationExecutor(
             $migrationsLoader,
             new BasicIndexMappingPartialUpdaterFactory(),
-            $this->testLogger
+            $this->testLogger,
         );
     }
 }

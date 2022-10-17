@@ -2,12 +2,12 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration;
 
-final class Configuration
+/**
+ * @final
+ */
+class Configuration
 {
-    /**
-     * @var string
-     */
-    private $migrationsDirectory;
+    private string $migrationsDirectory;
 
 
     public function __construct(string $migrationsDirectory)

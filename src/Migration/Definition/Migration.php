@@ -2,22 +2,19 @@
 
 namespace BrandEmbassy\ElasticSearchMigrations\Migration\Definition;
 
-final class Migration
+/**
+ * @final
+ */
+class Migration
 {
-    /**
-     * @var string
-     */
-    private $mappingType;
+    private string $mappingType;
 
     /**
      * @var array<mixed, mixed>|mixed[]
      */
-    private $propertiesToUpdate;
+    private array $propertiesToUpdate;
 
-    /**
-     * @var int
-     */
-    private $version;
+    private int $version;
 
 
     /**

@@ -12,17 +12,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use function sprintf;
 use function time;
 
-final class GenerateMigrationCommand extends Command
+/**
+ * @final
+ */
+class GenerateMigrationCommand extends Command
 {
-    /**
-     * @var Configuration
-     */
-    private $migrationConfig;
+    private Configuration $migrationConfig;
 
-    /**
-     * @var MigrationSerializer
-     */
-    private $migrationSerializer;
+    private MigrationSerializer $migrationSerializer;
 
 
     public function __construct(Configuration $migrationConfig, MigrationSerializer $migrationSerializer)
@@ -55,7 +52,7 @@ final class GenerateMigrationCommand extends Command
             '%s/%s/migration_%s.json',
             $this->migrationConfig->getMigrationsDirectory(),
             $indexType,
-            $migration->getVersion()
+            $migration->getVersion(),
         );
 
         FileSystem::write($fileName, $this->migrationSerializer->serialize($migration));

@@ -6,7 +6,10 @@ use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\MigrationSerializer;
 use Nette\Utils\Json;
 
-final class JsonMigrationSerializer implements MigrationSerializer
+/**
+ * @final
+ */
+class JsonMigrationSerializer implements MigrationSerializer
 {
     public function serialize(Migration $migration): string
     {

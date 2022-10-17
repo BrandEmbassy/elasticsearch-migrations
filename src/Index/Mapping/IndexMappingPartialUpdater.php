@@ -6,20 +6,17 @@ use BrandEmbassy\ElasticSearchMigrations\Client\MissingConnectionException;
 use BrandEmbassy\ElasticSearchMigrations\Migration\Definition\Migration;
 use Elastica\Client;
 use Elastica\Exception\ResponseException;
-use Elastica\Type\Mapping;
+use Elastica\Mapping;
 use Throwable;
 
-final class IndexMappingPartialUpdater
+/**
+ * @final
+ */
+class IndexMappingPartialUpdater
 {
-    /**
-     * @var Client
-     */
-    private $elasticSearchClient;
+    private Client $elasticSearchClient;
 
-    /**
-     * @var string
-     */
-    private $indexName;
+    private string $indexName;
 
 
     public function __construct(Client $elasticSearchClient, string $indexName)
@@ -48,14 +45,14 @@ final class IndexMappingPartialUpdater
                 $exception->getElasticsearchException(),
                 $migration,
                 $lastMigratedVersion,
-                $exception
+                $exception,
             );
         } catch (Throwable $exception) {
             throw MappingUpdateFailedException::create(
                 $exception->getMessage(),
                 $migration,
                 $lastMigratedVersion,
-                $exception
+                $exception,
             );
         }
     }
@@ -64,11 +61,9 @@ final class IndexMappingPartialUpdater
     private function updateMappingForIndex(Migration $migration): void
     {
         $elasticSearchIndex = $this->elasticSearchClient->getIndex($this->indexName);
-        $elasticSearchType = $elasticSearchIndex->getType($migration->getMappingType());
 
-        $mapping = new Mapping($elasticSearchType, $migration->getPropertiesToUpdate());
-
-        $mapping->send();
+        $mapping = new Mapping($migration->getPropertiesToUpdate());
+        $mapping->send($elasticSearchIndex);
 
         $this->elasticSearchClient->getIndex($this->indexName)->refresh();
     }
